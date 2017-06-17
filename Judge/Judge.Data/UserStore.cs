@@ -9,7 +9,7 @@ using Microsoft.AspNet.Identity;
 
 namespace Judge.Data
 {
-    internal sealed class UserStore : IUserPasswordStore<User, long>, IUserLockoutStore<User, long>, IUserTwoFactorStore<User, long>, IUserRepository
+    internal sealed class UserStore : IUserPasswordStore<User, long>, IUserLockoutStore<User, long>, IUserTwoFactorStore<User, long>, IUserLoginStore<User, long>, IUserRepository
     {
         private readonly DataContext _context;
         private readonly DbSet<User> _dbSet;
@@ -116,6 +116,26 @@ namespace Judge.Data
         public IEnumerable<User> GetUsers(IEnumerable<long> users)
         {
             return _dbSet.Where(o => users.Contains(o.Id)).OrderBy(o => o.Id).AsEnumerable();
+        }
+
+        public Task AddLoginAsync(User user, UserLoginInfo login)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveLoginAsync(User user, UserLoginInfo login)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IList<UserLoginInfo>> GetLoginsAsync(User user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<User> FindAsync(UserLoginInfo login)
+        {
+            return Task.FromResult<User>(null);
         }
     }
 }

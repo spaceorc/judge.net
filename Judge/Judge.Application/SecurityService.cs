@@ -35,5 +35,10 @@ namespace Judge.Application
         {
             return _signInManager.UserManager.FindByName(email) != null;
         }
+
+        public void SignIn(ExternalLoginInfo externalLoginInfo)
+        {
+            _signInManager.ExternalSignIn(externalLoginInfo, true);
+        }
     }
 }

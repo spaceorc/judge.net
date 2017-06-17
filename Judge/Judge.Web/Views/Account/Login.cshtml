@@ -47,6 +47,21 @@
     }
 </section>
 
+<section>
+    @using (Html.BeginForm("ExternalLogin", "Account"))
+    {
+        @Html.AntiForgeryToken()
+
+        <fieldset>
+            <div>Log on using these providers:</div>
+            <button type="submit" name="provider" value="Google" class="btn btn-default"><i class="fa fa-google-plus"></i> Google</button>
+        </fieldset>
+    }
+</section>
+@section css{
+    @Styles.Render("~/Content/fontawesome")
+}
+
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
 }

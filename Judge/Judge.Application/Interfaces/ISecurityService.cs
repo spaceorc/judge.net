@@ -9,5 +9,6 @@ namespace Judge.Application.Interfaces
         void SignOut();
         void Register(RegisterViewModel model);
         bool UserExists(string email);
+        void SignIn(ExternalLoginInfo externalLoginInfo);
     }
 }
