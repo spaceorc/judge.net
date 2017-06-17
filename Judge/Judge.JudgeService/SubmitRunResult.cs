@@ -1,5 +1,5 @@
 ﻿using Judge.Checker;
-using Judge.Runner;
+using Judge.RunnerInterface;
 
 namespace Judge.JudgeService
 {

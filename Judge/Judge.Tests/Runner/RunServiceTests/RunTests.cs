@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Judge.Runner;
+using Judge.RunnerInterface;
 using NUnit.Framework;
 
 namespace Judge.Tests.Runner.RunServiceTests

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Judge.Runner
+namespace Judge.RunnerInterface
 {
     public sealed class Configuration
     {

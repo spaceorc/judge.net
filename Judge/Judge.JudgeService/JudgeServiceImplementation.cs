@@ -9,7 +9,8 @@ using Judge.Model.Configuration;
 using Judge.Model.Entities;
 using Judge.Model.SubmitSolution;
 using Judge.Runner;
-using Configuration = Judge.Runner.Configuration;
+using Judge.RunnerInterface;
+using Configuration = Judge.RunnerInterface.Configuration;
 
 namespace Judge.JudgeService
 {

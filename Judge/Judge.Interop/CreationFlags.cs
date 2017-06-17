@@ -1,0 +1,20 @@
+﻿using System;
+
+namespace Judge.Interop
+{
+    [Flags]
+    public enum CreationFlags
+    {
+        CREATE_BREAKAWAY_FROM_JOB = 16777216,
+        CREATE_SUSPENDED = 4,
+        CREATE_NEW_CONSOLE = 16,
+        CREATE_NEW_PROCESS_GROUP = 512,
+        CREATE_UNICODE_ENVIRONMENT = 1024,
+        CREATE_SEPARATE_WOW_VDM = 2048,
+        CREATE_DEFAULT_ERROR_MODE = 67108864,
+        CREATE_NO_WINDOW = 134217728,
+        CREATE_PROTECTED_PROCESS = 262144,
+        DEBUG_PROCESS = 1,
+        DEBUG_ONLY_THIS_PROCESS = 2,
+    }
+}

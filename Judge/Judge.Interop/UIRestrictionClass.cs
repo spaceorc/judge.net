@@ -1,0 +1,17 @@
+﻿using System;
+
+namespace Judge.Interop
+{
+    [Flags]
+    public enum UIRestrictionClass : uint
+    {
+        JOB_OBJECT_UILIMIT_DESKTOP = 64,
+        JOB_OBJECT_UILIMIT_DISPLAYSETTINGS = 16,
+        JOB_OBJECT_UILIMIT_EXITWINDOWS = 128,
+        JOB_OBJECT_UILIMIT_GLOBALATOMS = 32,
+        JOB_OBJECT_UILIMIT_HANDLES = 1,
+        JOB_OBJECT_UILIMIT_READCLIPBOARD = 2,
+        JOB_OBJECT_UILIMIT_SYSTEMPARAMETERS = 8,
+        JOB_OBJECT_UILIMIT_WRITECLIPBOARD = 4,
+    }
+}

@@ -18,12 +18,8 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
-    <Compile Include="IRunService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RunResult.cs" />
     <Compile Include="RunService.cs" />
-    <Compile Include="RunStatus.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="run-x64\invoke2.dll">
@@ -32,6 +28,12 @@
     <Content Include="run-x64\run.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Judge.RunnerInterface\Judge.RunnerInterface.csproj">
+      <Project>{30C3479A-E4CE-42C1-8869-FEB84A87D12F}</Project>
+      <Name>Judge.RunnerInterface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

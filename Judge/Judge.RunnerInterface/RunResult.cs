@@ -3,14 +3,14 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace Judge.Runner
+namespace Judge.RunnerInterface
 {
     public sealed class RunResult
     {
         public RunStatus RunStatus { get; private set; }
-        public int TimeConsumedMilliseconds { get; private set; }
+        public int TimeConsumedMilliseconds { get; set; }
         public int TimePassedMilliseconds { get; private set; }
-        public int PeakMemoryBytes { get; private set; }
+        public int PeakMemoryBytes { get; set; }
         public string TextStatus { get; private set; }
         public string Description { get; private set; }
         public string Output { get; private set; }
@@ -102,6 +102,11 @@ namespace Judge.Runner
                 return RunStatus.Success;
 
             throw new ArgumentOutOfRangeException(nameof(textStatus));
+        }
+
+        public static RunResult Create(RunStatus status)
+        {
+            return new RunResult { RunStatus = status };
         }
     }
 }

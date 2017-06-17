@@ -2,7 +2,7 @@
 using Judge.Checker;
 using Judge.Compiler;
 using Judge.Model.SubmitSolution;
-using Judge.Runner;
+using Judge.RunnerInterface;
 
 namespace Judge.JudgeService
 {
@@ -31,19 +31,19 @@ namespace Judge.JudgeService
 
             switch (RunStatus.Value)
             {
-                case Runner.RunStatus.TimeLimitExceeded:
+                case RunnerInterface.RunStatus.TimeLimitExceeded:
                     return SubmitStatus.TimeLimitExceeded;
-                case Runner.RunStatus.MemoryLimitExceeded:
+                case RunnerInterface.RunStatus.MemoryLimitExceeded:
                     return SubmitStatus.MemoryLimitExceeded;
-                case Runner.RunStatus.SecurityViolation:
+                case RunnerInterface.RunStatus.SecurityViolation:
                     return SubmitStatus.RuntimeError;
-                case Runner.RunStatus.RuntimeError:
+                case RunnerInterface.RunStatus.RuntimeError:
                     return SubmitStatus.RuntimeError;
-                case Runner.RunStatus.InvocationFailed:
+                case RunnerInterface.RunStatus.InvocationFailed:
                     return SubmitStatus.ServerError;
-                case Runner.RunStatus.IdlenessLimitExceeded:
+                case RunnerInterface.RunStatus.IdlenessLimitExceeded:
                     return SubmitStatus.TimeLimitExceeded;
-                case Runner.RunStatus.Success:
+                case RunnerInterface.RunStatus.Success:
                     return GetCheckStatus();
                 default:
                     throw new ArgumentOutOfRangeException();

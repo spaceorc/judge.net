@@ -1,4 +1,4 @@
-﻿namespace Judge.Runner
+﻿namespace Judge.RunnerInterface
 {
     public interface IRunService
     {
