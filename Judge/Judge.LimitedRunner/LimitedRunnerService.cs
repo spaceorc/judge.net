@@ -52,12 +52,16 @@ namespace Judge.LimitedRunner
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     StartupInfo startupInfo = new StartupInfo();
                     startupInfo.cb = Marshal.SizeOf((object)startupInfo);
-                    startupInfo.dwFlags = 128;
+                    startupInfo.dwFlags = 0x100;
 
                     
-                    FileStream fs = new FileStream(@"C:\input.txt", FileMode.Open, FileAccess.Read);
-                    var t = Pinvoke.SetHandleInformation(fs.Handle, 0x00000001, 0x00000001);
-                    startupInfo.hStdInput = fs.Handle;
+                    var input = new FileStream(@"C:\input.txt", FileMode.Open, FileAccess.Read);
+                    Pinvoke.SetHandleInformation(input.Handle, 0x00000001, 0x00000001);
+                    startupInfo.hStdInput = input.Handle;
+
+                    var output = new FileStream(@"D:\output.txt", FileMode.Create, FileAccess.Write);
+                    Pinvoke.SetHandleInformation(output.Handle, 0x00000001, 0x00000001);
+                    startupInfo.hStdOutput = output.Handle;
 
                     Pinvoke.SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
                     CreationFlags dwCreationFlags = CreationFlags.CREATE_BREAKAWAY_FROM_JOB | CreationFlags.CREATE_SUSPENDED | CreationFlags.CREATE_SEPARATE_WOW_VDM;
@@ -161,7 +165,8 @@ namespace Judge.LimitedRunner
                     }
                     finally
                     {
-                        Pinvoke.CloseHandle(fs.Handle);
+                        Pinvoke.CloseHandle(input.Handle);
+                        Pinvoke.CloseHandle(output.Handle);
                         Pinvoke.CloseHandle(pi.hThread);
                         Pinvoke.CloseHandle(pi.hProcess);
                     }
