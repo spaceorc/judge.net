@@ -1,7 +1,7 @@
 ﻿using Judge.RunnerInterface;
 using NUnit.Framework;
 
-namespace Judge.Tests.Runner.RunResultTests
+namespace Judge.Tests.RunnerTests.RunResultTests
 {
     [TestFixture]
     public class ParseTests

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Judge.Checker;
 using Judge.Compiler;
+using Judge.LimitedRunner;
 using Judge.Model.CheckSolution;
 using Judge.Model.Configuration;
 using Judge.Model.Entities;
@@ -142,7 +143,8 @@ namespace Judge.JudgeService
 
         private SubmitRunResult Run(Task task, string input, string runString)
         {
-            var runService = new RunService(_runnerPath, _workingDirectory);
+            var runService = new LimitedRunnerService();
+            //var runService = new RunService(_runnerPath, _workingDirectory);
             var configuration = new Configuration(runString, _workingDirectory, task.TimeLimitMilliseconds, task.MemoryLimitBytes);
             configuration.InputFile = input;
             configuration.OutputFile = "output.txt"; //TODO

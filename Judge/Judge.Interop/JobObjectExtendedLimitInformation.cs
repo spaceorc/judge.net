@@ -1,12 +1,16 @@
+using System;
+using System.Runtime.InteropServices;
+
 namespace Judge.Interop
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct JobObjectExtendedLimitInformation
     {
         public JobObjectBasicLimitInformation BasicLimitInformation;
         public IOCounters IoInfo;
-        public uint ProcessMemoryLimit;
-        public uint JobMemoryLimit;
-        public uint PeakProcessMemoryUsed;
-        public uint PeakJobMemoryUsed;
+        public UIntPtr ProcessMemoryLimit;
+        public UIntPtr JobMemoryLimit;
+        public UIntPtr PeakProcessMemoryUsed;
+        public UIntPtr PeakJobMemoryUsed;
     }
 }

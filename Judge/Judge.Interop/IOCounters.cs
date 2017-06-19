@@ -1,5 +1,8 @@
+using System.Runtime.InteropServices;
+
 namespace Judge.Interop
 {
+    [StructLayout(LayoutKind.Sequential)]
     public struct IOCounters
     {
         public ulong ReadOperationCount;

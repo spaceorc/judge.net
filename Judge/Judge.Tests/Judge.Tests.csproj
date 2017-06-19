@@ -73,10 +73,11 @@
     </Compile>
     <Compile Include="Data\SubmitResultRepositoryTests\DequeueUncheckedTests.cs" />
     <Compile Include="Data\UnitOfWorkTests\CommitTests.cs" />
+    <Compile Include="LimitedRunnerTests\LimitedRunnerServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Runner\ConfigurationTests\ConfigurationTest.cs" />
-    <Compile Include="Runner\RunResultTests\ParseTests.cs" />
-    <Compile Include="Runner\RunServiceTests\RunTests.cs" />
+    <Compile Include="RunnerTests\ConfigurationTests\ConfigurationTest.cs" />
+    <Compile Include="RunnerTests\RunResultTests\ParseTests.cs" />
+    <Compile Include="RunnerTests\RunServiceTests\RunTests.cs" />
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
@@ -104,6 +105,10 @@
     <ProjectReference Include="..\Judge.Data\Judge.Data.csproj">
       <Project>{8D356F93-E347-46A4-93EB-1E3D581D5C59}</Project>
       <Name>Judge.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Judge.LimitedRunner\Judge.LimitedRunner.csproj">
+      <Project>{989B396D-A80A-4290-9B65-7A1E522116EC}</Project>
+      <Name>Judge.LimitedRunner</Name>
     </ProjectReference>
     <ProjectReference Include="..\Judge.Model\Judge.Model.csproj">
       <Project>{C21CFD2F-64C7-47E8-A088-275D0340F9D8}</Project>

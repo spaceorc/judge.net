@@ -57,6 +57,10 @@
       <Project>{8D356F93-E347-46A4-93EB-1E3D581D5C59}</Project>
       <Name>Judge.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Judge.LimitedRunner\Judge.LimitedRunner.csproj">
+      <Project>{989B396D-A80A-4290-9B65-7A1E522116EC}</Project>
+      <Name>Judge.LimitedRunner</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Judge.Model\Judge.Model.csproj">
       <Project>{C21CFD2F-64C7-47E8-A088-275D0340F9D8}</Project>
       <Name>Judge.Model</Name>

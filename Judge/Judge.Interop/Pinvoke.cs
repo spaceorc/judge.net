@@ -33,6 +33,9 @@ namespace Judge.Interop
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool SetInformationJobObject(IntPtr hJob, JobObjectInfoClass JobObjectInfoClass, ref JobObjectAssociateCompletionPort lpJobObjectInfo, uint cbJobObjectInfoLength);
 
+        [DllImport("kernel32.dll")]
+        public static extern bool SetInformationJobObject(IntPtr hJob, JobObjectInfoClass infoType, IntPtr lpJobObjectInfo, uint cbJobObjectInfoLength);
+
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool TerminateJobObject(IntPtr hJob, uint uExitCode);
 
@@ -105,5 +108,12 @@ namespace Judge.Interop
 
         [DllImport("kernel32.dll")]
         public static extern bool GetQueuedCompletionStatus(IntPtr CompletionPort, out uint code, out UIntPtr lpCompletionKey, out IntPtr lpOverlapped, uint dwMilliseconds);
+
+        [DllImport("kernel32.dll")]
+        public static extern bool SetHandleInformation(IntPtr hObject, uint dwMask, uint dwFlags);
+
+        [DllImport("coredll", SetLastError = true)]
+        static extern IntPtr CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile);
+
     }
 }

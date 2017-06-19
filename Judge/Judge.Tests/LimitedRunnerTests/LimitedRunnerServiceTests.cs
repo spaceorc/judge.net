@@ -1,20 +1,26 @@
 ﻿using System.IO;
-using Judge.Runner;
+using Judge.LimitedRunner;
 using Judge.RunnerInterface;
 using NUnit.Framework;
 
-namespace Judge.Tests.Runner.RunServiceTests
+namespace Judge.Tests.LimitedRunnerTests
 {
     [TestFixture]
-    public class RunTests
+    public class LimitedRunnerServiceTests
     {
-        private readonly string _runnerPath = Path.Combine(TestContext.CurrentContext.TestDirectory, @"run-x64\run.exe");
         private readonly string _workingDirectory = Path.Combine(TestContext.CurrentContext.TestDirectory, "WorkingDirectory");
+
+        [SetUp]
+        public void SetUp()
+        {
+            if (!Directory.Exists(_workingDirectory))
+                Directory.CreateDirectory(_workingDirectory);
+        }
 
         [Test]
         public void RunCmdTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var configuration = new Configuration("cmd", _workingDirectory, 1000, 10 * 1024 * 1024);
 
@@ -24,7 +30,7 @@ namespace Judge.Tests.Runner.RunServiceTests
         [Test]
         public void TimeLimitSolutionTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\TL.exe");
             var configuration = new Configuration(fileName, _workingDirectory, 100, 10 * 1024 * 1024);
@@ -37,7 +43,7 @@ namespace Judge.Tests.Runner.RunServiceTests
         [Test]
         public void IdleSolutionTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\IdleTest.exe");
             var configuration = new Configuration(fileName, _workingDirectory, 100, 10 * 1024 * 1024);
@@ -50,7 +56,7 @@ namespace Judge.Tests.Runner.RunServiceTests
         [Test]
         public void MemoryLimitTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var configuration = new Configuration(@"notepad", _workingDirectory, 1000, 10 * 1024);
 
@@ -62,7 +68,7 @@ namespace Judge.Tests.Runner.RunServiceTests
         [Test]
         public void InvalidCodeSolutionTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\InvalidReturnCode.exe");
             var configuration = new Configuration(fileName, _workingDirectory, 1000, 10 * 1024 * 1024);
@@ -75,7 +81,7 @@ namespace Judge.Tests.Runner.RunServiceTests
         [Test]
         public void RuntimeErrorSolutionTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\RuntimeError.exe");
             var configuration = new Configuration(fileName, _workingDirectory, 1000, 10 * 1024 * 1024);
@@ -88,7 +94,7 @@ namespace Judge.Tests.Runner.RunServiceTests
         [Test]
         public void InvocationFailedTest()
         {
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\AB.exe");
             var configuration = new Configuration(fileName, _workingDirectory, 1000, 10 * 1024 * 1024)
@@ -110,13 +116,13 @@ namespace Judge.Tests.Runner.RunServiceTests
                 input.Write("1 2");
             }
 
-            var service = new RunService(_runnerPath, _workingDirectory);
+            var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\AB.exe");
             var configuration = new Configuration(fileName, _workingDirectory, 1000, 10 * 1024 * 1024)
             {
-                InputFile = "input.txt",
-                OutputFile = "output.txt"
+                InputFile = Path.Combine(_workingDirectory, "input.txt"),
+                OutputFile = Path.Combine(_workingDirectory, "output.txt")
             };
 
             var result = service.Run(configuration);

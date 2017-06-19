@@ -1,13 +1,15 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Timers;
 using Judge.Interop;
 using Judge.RunnerInterface;
+using Microsoft.Win32.SafeHandles;
 
 namespace Judge.LimitedRunner
 {
-    public class LimitedRunner : IRunService
+    public class LimitedRunnerService : IRunService
     {
         public RunResult Run(Configuration configuration)
         {
@@ -18,15 +20,19 @@ namespace Judge.LimitedRunner
 
             try
             {
-                JobObjectExtendedLimitInformation lpJobObjectInfo1 = new JobObjectExtendedLimitInformation();
+                var lpJobObjectInfo1 = new JobObjectExtendedLimitInformation();
                 lpJobObjectInfo1.BasicLimitInformation = new JobObjectBasicLimitInformation();
-                lpJobObjectInfo1.BasicLimitInformation.PerJobUserTimeLimit = 10000UL * (ulong)configuration.TimeLimitMilliseconds;
+                lpJobObjectInfo1.BasicLimitInformation.PerJobUserTimeLimit = 10000L * (long)configuration.TimeLimitMilliseconds;
                 lpJobObjectInfo1.BasicLimitInformation.PriorityClass = (uint)PriorityClass.NORMAL_PRIORITY_CLASS;
                 lpJobObjectInfo1.BasicLimitInformation.ActiveProcessLimit = 1U;
-                lpJobObjectInfo1.BasicLimitInformation.LimitFlags = JobObjectLimitFlags.JOB_OBJECT_LIMIT_ACTIVE_PROCESS | JobObjectLimitFlags.JOB_OBJECT_LIMIT_DIE_ON_UNHANDLED_EXCEPTION | JobObjectLimitFlags.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE | JobObjectLimitFlags.JOB_OBJECT_LIMIT_PRIORITY_CLASS;
-                lpJobObjectInfo1.JobMemoryLimit = (uint)configuration.MemoryLimitBytes;
+                lpJobObjectInfo1.BasicLimitInformation.LimitFlags = (uint)(JobObjectLimitFlags.JOB_OBJECT_LIMIT_ACTIVE_PROCESS | JobObjectLimitFlags.JOB_OBJECT_LIMIT_DIE_ON_UNHANDLED_EXCEPTION | JobObjectLimitFlags.JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE | JobObjectLimitFlags.JOB_OBJECT_LIMIT_PRIORITY_CLASS);
+                lpJobObjectInfo1.JobMemoryLimit = (UIntPtr)configuration.MemoryLimitBytes;
 
-                if (!Pinvoke.SetInformationJobObject(job, JobObjectInfoClass.JobObjectExtendedLimitInformation, ref lpJobObjectInfo1, (uint)Marshal.SizeOf((object)lpJobObjectInfo1)))
+                int length = Marshal.SizeOf(typeof(JobObjectExtendedLimitInformation));
+                IntPtr extendedInfoPtr = Marshal.AllocHGlobal(length);
+                Marshal.StructureToPtr(lpJobObjectInfo1, extendedInfoPtr, false);
+
+                if (!Pinvoke.SetInformationJobObject(job, JobObjectInfoClass.JobObjectExtendedLimitInformation, extendedInfoPtr, (uint)length))
                     throw new Win32Exception(Marshal.GetLastWin32Error());
 
                 var lpJobObjectInfo2 = new JobObjectBasicUIRestrictions();
@@ -47,12 +53,19 @@ namespace Judge.LimitedRunner
                     StartupInfo startupInfo = new StartupInfo();
                     startupInfo.cb = Marshal.SizeOf((object)startupInfo);
                     startupInfo.dwFlags = 128;
-                    int num1 = (int)Pinvoke.SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
-                    CreationFlags dwCreationFlags = CreationFlags.CREATE_BREAKAWAY_FROM_JOB | CreationFlags.CREATE_SUSPENDED | CreationFlags.CREATE_SEPARATE_WOW_VDM | CreationFlags.CREATE_NO_WINDOW;
+
+                    
+                    FileStream fs = new FileStream(@"C:\input.txt", FileMode.Open, FileAccess.Read);
+                    var t = Pinvoke.SetHandleInformation(fs.Handle, 0x00000001, 0x00000001);
+                    startupInfo.hStdInput = fs.Handle;
+
+                    Pinvoke.SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
+                    CreationFlags dwCreationFlags = CreationFlags.CREATE_BREAKAWAY_FROM_JOB | CreationFlags.CREATE_SUSPENDED | CreationFlags.CREATE_SEPARATE_WOW_VDM;
                     SecurityAttributes securityAttributes = new SecurityAttributes();
+                    securityAttributes.bInheritHandle = 1;
                     ProcessInformation pi;
 
-                    if (!Pinvoke.CreateProcess((string)null, configuration.ToString(), ref securityAttributes, ref securityAttributes, false, dwCreationFlags, IntPtr.Zero, configuration.Directory, ref startupInfo, out pi))
+                    if (!Pinvoke.CreateProcess(null, configuration.RunString, ref securityAttributes, ref securityAttributes, boolInheritHandles: true, dwCreationFlags: dwCreationFlags, lpEnvironment: IntPtr.Zero, lpszCurrentDir: configuration.Directory, startupInfo: ref startupInfo, pi: out pi))
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     try
                     {
@@ -148,6 +161,7 @@ namespace Judge.LimitedRunner
                     }
                     finally
                     {
+                        Pinvoke.CloseHandle(fs.Handle);
                         Pinvoke.CloseHandle(pi.hThread);
                         Pinvoke.CloseHandle(pi.hProcess);
                     }

@@ -1,7 +1,7 @@
 ﻿using Judge.RunnerInterface;
 using NUnit.Framework;
 
-namespace Judge.Tests.Runner.ConfigurationTests
+namespace Judge.Tests.RunnerTests.ConfigurationTests
 {
     [TestFixture]
     public class ConfigurationTest
