@@ -112,8 +112,8 @@ namespace Judge.Interop
         [DllImport("kernel32.dll")]
         public static extern bool SetHandleInformation(IntPtr hObject, uint dwMask, uint dwFlags);
 
-        [DllImport("coredll", SetLastError = true)]
-        static extern IntPtr CreateFile(String lpFileName, UInt32 dwDesiredAccess, UInt32 dwShareMode, IntPtr lpSecurityAttributes, UInt32 dwCreationDisposition, UInt32 dwFlagsAndAttributes, IntPtr hTemplateFile);
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern IntPtr CreateFile(string lpFileName, DesiredAccess dwDesiredAccess, uint dwShareMode, ref SecurityAttributes lpSecurityAttributes, CreationDisposition dwCreationDisposition, uint dwFlagsAndAttributes, IntPtr hTemplateFile);
 
     }
 }

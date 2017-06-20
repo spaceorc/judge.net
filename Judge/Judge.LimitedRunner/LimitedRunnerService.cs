@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Timers;
 using Judge.Interop;
 using Judge.RunnerInterface;
-using Microsoft.Win32.SafeHandles;
 
 namespace Judge.LimitedRunner
 {
@@ -54,21 +53,27 @@ namespace Judge.LimitedRunner
                     startupInfo.cb = Marshal.SizeOf((object)startupInfo);
                     startupInfo.dwFlags = 0x100;
 
-                    
-                    var input = new FileStream(@"C:\input.txt", FileMode.Open, FileAccess.Read);
-                    Pinvoke.SetHandleInformation(input.Handle, 0x00000001, 0x00000001);
-                    startupInfo.hStdInput = input.Handle;
+                    var securityAttributes = new SecurityAttributes();
+                    securityAttributes.bInheritHandle = 1;
 
-                    var output = new FileStream(@"D:\output.txt", FileMode.Create, FileAccess.Write);
-                    Pinvoke.SetHandleInformation(output.Handle, 0x00000001, 0x00000001);
-                    startupInfo.hStdOutput = output.Handle;
+                    var inputFile = Path.Combine(configuration.Directory, configuration.InputFile);
+                    var outputFile = Path.Combine(configuration.Directory, configuration.OutputFile);
+
+                    var input = Pinvoke.CreateFile(inputFile, DesiredAccess.GENERIC_READ, 0U, ref securityAttributes,
+                        CreationDisposition.OPEN_EXISTING, 0, IntPtr.Zero);
+
+                    var output = Pinvoke.CreateFile(outputFile, DesiredAccess.GENERIC_WRITE, 0, ref securityAttributes,
+                        CreationDisposition.CREATE_NEW, 0, IntPtr.Zero);
+
+                    startupInfo.hStdInput = input;
+                    startupInfo.hStdOutput = output;
 
                     Pinvoke.SetErrorMode(ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOALIGNMENTFAULTEXCEPT | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX);
-                    CreationFlags dwCreationFlags = CreationFlags.CREATE_BREAKAWAY_FROM_JOB | CreationFlags.CREATE_SUSPENDED | CreationFlags.CREATE_SEPARATE_WOW_VDM;
-                    SecurityAttributes securityAttributes = new SecurityAttributes();
-                    securityAttributes.bInheritHandle = 1;
+                    var dwCreationFlags = CreationFlags.CREATE_BREAKAWAY_FROM_JOB | CreationFlags.CREATE_SUSPENDED | CreationFlags.CREATE_SEPARATE_WOW_VDM | CreationFlags.CREATE_NO_WINDOW;
                     ProcessInformation pi;
 
+                    var low = false;
+                    decimal t = 100;
                     if (!Pinvoke.CreateProcess(null, configuration.RunString, ref securityAttributes, ref securityAttributes, boolInheritHandles: true, dwCreationFlags: dwCreationFlags, lpEnvironment: IntPtr.Zero, lpszCurrentDir: configuration.Directory, startupInfo: ref startupInfo, pi: out pi))
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     try
@@ -78,26 +83,25 @@ namespace Judge.LimitedRunner
                         Timer timer = null;
                         try
                         {
-                            //if (invokeOptions.ProcessorConsumingCheckPeriod.CompareTo(TimeSpan.Zero) > 0 && invokeOptions.MinProcessorConsumingPercent > new Decimal(0))
-                            //{
-                            //    timer = new Timer(invokeOptions.ProcessorConsumingCheckPeriod.TotalMilliseconds);
-                            //    timer.AutoReset = true;
-                            //    TimeSpan prevTime = TimeSpan.Zero;
-                            //    timer.Elapsed += (ElapsedEventHandler)((sender, e) =>
-                            //    {
-                            //        TimeSpan userTimeConsumed = LimitedInvokationService.GetUserTimeConsumed(job);
-                            //        Decimal val1 = (Decimal)(100.0 * userTimeConsumed.Subtract(prevTime).TotalMilliseconds / invokeOptions.ProcessorConsumingCheckPeriod.TotalMilliseconds);
-                            //        result.MinPeriodProcessorConsumingPercent = Math.Min(val1, result.MinPeriodProcessorConsumingPercent);
-                            //        if (val1 < invokeOptions.MinProcessorConsumingPercent)
-                            //        {
-                            //            result.Status = InvokeResultStatus.LowProcessorConsumingPercent;
-                            //            Pinvoke.TerminateJobObject(job, 1U);
-                            //        }
-                            //        else
-                            //            prevTime = userTimeConsumed;
-                            //    });
-                            //}
-                            IntPtr[] lpHandles = new IntPtr[2]
+
+                            timer = new Timer(50); //TODO: change
+                            timer.AutoReset = true;
+                            int prevTime = 0;
+                            timer.Elapsed += (ElapsedEventHandler)((sender, e) =>
+                            {
+                                var userTimeConsumed = GetUserTimeConsumed(job);
+                                var val1 = (decimal)(100.0 * (userTimeConsumed - prevTime) / 50);
+                                t = Math.Min(val1, t);
+                                if (val1 < 10)
+                                {
+                                    low = true;
+                                    Pinvoke.TerminateJobObject(job, 1U);
+                                }
+                                else
+                                    prevTime = userTimeConsumed;
+                            });
+
+                            var lpHandles = new[]
                             {
                                 job,
                                 pi.hProcess
@@ -150,6 +154,8 @@ namespace Judge.LimitedRunner
                             throw new Win32Exception(Marshal.GetLastWin32Error());
 
                         //result.ExitCode = (int)exitCode;
+                        if (low && result == null)
+                            result = RunResult.Create(RunStatus.IdlenessLimitExceeded);
 
                         if (result == null)
                             result = RunResult.Create(exitCode == 0 ? RunStatus.Success : RunStatus.RuntimeError);
@@ -165,8 +171,8 @@ namespace Judge.LimitedRunner
                     }
                     finally
                     {
-                        Pinvoke.CloseHandle(input.Handle);
-                        Pinvoke.CloseHandle(output.Handle);
+                        Pinvoke.CloseHandle(input);
+                        Pinvoke.CloseHandle(output);
                         Pinvoke.CloseHandle(pi.hThread);
                         Pinvoke.CloseHandle(pi.hProcess);
                     }

@@ -43,10 +43,18 @@ namespace Judge.Tests.LimitedRunnerTests
         [Test]
         public void IdleSolutionTest()
         {
+            using (CreateFile("input.txt"))
+            {
+            }
+
             var service = new LimitedRunnerService();
 
             var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\IdleTest.exe");
-            var configuration = new Configuration(fileName, _workingDirectory, 100, 10 * 1024 * 1024);
+            var configuration = new Configuration(fileName, _workingDirectory, 500, 10 * 1024 * 1024)
+            {
+                InputFile = "input.txt",
+                OutputFile = "output.txt"
+            };
 
             var result = service.Run(configuration);
 
