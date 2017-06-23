@@ -104,7 +104,8 @@ namespace Judge.LimitedRunner
 
                     var low = false;
                     decimal t = 100;
-                    if (!Pinvoke.CreateProcess(null, configuration.RunString, ref securityAttributes, ref securityAttributes, boolInheritHandles: true, dwCreationFlags: dwCreationFlags, lpEnvironment: IntPtr.Zero, lpszCurrentDir: configuration.Directory, startupInfo: ref startupInfo, pi: out pi))
+                    var runString = Path.Combine(configuration.Directory, configuration.RunString);
+                    if (!Pinvoke.CreateProcess(null, runString, ref securityAttributes, ref securityAttributes, boolInheritHandles: true, dwCreationFlags: dwCreationFlags, lpEnvironment: IntPtr.Zero, lpszCurrentDir: configuration.Directory, startupInfo: ref startupInfo, pi: out pi))
                         throw new Win32Exception(Marshal.GetLastWin32Error());
                     try
                     {
