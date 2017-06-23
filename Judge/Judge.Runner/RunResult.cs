@@ -2,10 +2,11 @@
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Judge.RunnerInterface;
 
-namespace Judge.RunnerInterface
+namespace Judge.Runner
 {
-    public sealed class RunResult
+    internal sealed class RunResult : IRunResult
     {
         public RunStatus RunStatus { get; private set; }
         public int TimeConsumedMilliseconds { get; set; }
@@ -102,11 +103,6 @@ namespace Judge.RunnerInterface
                 return RunStatus.Success;
 
             throw new ArgumentOutOfRangeException(nameof(textStatus));
-        }
-
-        public static RunResult Create(RunStatus status)
-        {
-            return new RunResult { RunStatus = status };
         }
     }
 }

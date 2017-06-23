@@ -2,6 +2,6 @@
 {
     public interface IRunService
     {
-        RunResult Run(Configuration configuration);
+        IRunResult Run(Configuration configuration);
     }
 }

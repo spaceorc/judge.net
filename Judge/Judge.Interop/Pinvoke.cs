@@ -5,6 +5,9 @@ namespace Judge.Interop
 {
     public static class Pinvoke
     {
+        public const uint WAIT_TIMEOUT = 0x00000102;
+        public const uint STARTF_USESTDHANDLES = 0x00000100;
+
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern IntPtr CreateJobObject([In] ref SecurityAttributes lpJobAttributes, string lpName);
 

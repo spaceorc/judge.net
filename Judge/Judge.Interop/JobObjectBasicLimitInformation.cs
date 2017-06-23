@@ -8,12 +8,12 @@ namespace Judge.Interop
     {
         public long PerProcessUserTimeLimit;
         public long PerJobUserTimeLimit;
-        public uint LimitFlags;
+        public JobObjectLimitFlags LimitFlags;
         public UIntPtr MinimumWorkingSetSize;
         public UIntPtr MaximumWorkingSetSize;
         public uint ActiveProcessLimit;
         public UIntPtr Affinity;
-        public uint PriorityClass;
+        public PriorityClass PriorityClass;
         public uint SchedulingClass;
     }
 }

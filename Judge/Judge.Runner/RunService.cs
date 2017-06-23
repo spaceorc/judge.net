@@ -15,7 +15,7 @@ namespace Judge.Runner
             _workingDirectory = workingDirectory;
         }
 
-        public RunResult Run(Configuration configuration)
+        public IRunResult Run(Configuration configuration)
         {
             var startInfo = new ProcessStartInfo(_runnerPath, configuration.ToString())
             {

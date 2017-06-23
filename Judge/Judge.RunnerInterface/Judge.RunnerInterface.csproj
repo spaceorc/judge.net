@@ -35,9 +35,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration.cs" />
+    <Compile Include="IRunResult.cs" />
     <Compile Include="IRunService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RunResult.cs" />
     <Compile Include="RunStatus.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

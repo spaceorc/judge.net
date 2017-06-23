@@ -1,4 +1,5 @@
-﻿using Judge.RunnerInterface;
+﻿using Judge.Runner;
+using Judge.RunnerInterface;
 using NUnit.Framework;
 
 namespace Judge.Tests.RunnerTests.RunResultTests
