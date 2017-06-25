@@ -118,5 +118,24 @@ namespace Judge.Interop
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr CreateFile(string lpFileName, DesiredAccess dwDesiredAccess, uint dwShareMode, ref SecurityAttributes lpSecurityAttributes, CreationDisposition dwCreationDisposition, uint dwFlagsAndAttributes, IntPtr hTemplateFile);
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        public static extern bool GetProcessWorkingSetSize(IntPtr hProcess, out IntPtr lpMinimumWorkingSetSize, out IntPtr lpMaximumWorkingSetSize);
+
+        [DllImport("psapi.dll", SetLastError = true)]
+        public static extern bool GetProcessMemoryInfo(IntPtr Process, ref ProcessMemoryCounters ppsmemCounters, uint cb);
+    }
+
+    public struct ProcessMemoryCounters
+    {
+        public uint cb;
+        public uint PageFaultCount;
+        public IntPtr PeakWorkingSetSize;
+        public IntPtr WorkingSetSize;
+        public IntPtr QuotaPeakPagedPoolUsage;
+        public IntPtr QuotaPagedPoolUsage;
+        public IntPtr QuotaPeakNonPagedPoolUsage;
+        public IntPtr QuotaNonPagedPoolUsage;
+        public IntPtr PagefileUsage;
+        public IntPtr PeakPagefileUsage;
     }
 }

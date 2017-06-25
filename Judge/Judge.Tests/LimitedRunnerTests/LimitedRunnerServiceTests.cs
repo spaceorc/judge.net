@@ -144,6 +144,23 @@ namespace Judge.Tests.LimitedRunnerTests
             Assert.That(result.RunStatus, Is.EqualTo(RunStatus.Success));
         }
 
+        [Test]
+        public void MemoryTest()
+        {
+            var service = new LimitedRunnerService();
+
+            var fileName = Path.Combine(TestContext.CurrentContext.TestDirectory, @"TestSolutions\Memory.exe 100");
+            var configuration = new Configuration(fileName, _workingDirectory, 1000, 10 * 1024 * 1024)
+            {
+                InputFile = Path.Combine(_workingDirectory, "input.txt"),
+                OutputFile = Path.Combine(_workingDirectory, "output.txt")
+            };
+
+            var result = service.Run(configuration);
+
+            Assert.That(result.RunStatus, Is.EqualTo(RunStatus.MemoryLimitExceeded));
+        }
+
         [TearDown]
         public void TearDown()
         {

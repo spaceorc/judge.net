@@ -116,9 +116,9 @@ namespace Judge.LimitedRunner
                         uint waitResult;
                         try
                         {
-                            var interval = 50;
+                            var interval = 1;
 
-                            timer = new Timer(interval); //TODO: change
+                            timer = new Timer(interval);
                             timer.AutoReset = true;
 
                             var prevTime = 0;
@@ -157,6 +157,9 @@ namespace Judge.LimitedRunner
                                 timer.Close();
                             }
                         }
+
+                        var pc = new ProcessMemoryCounters();
+                        var r = Pinvoke.GetProcessMemoryInfo(pi.hProcess, ref pc, (uint)Marshal.SizeOf(pc));
 
                         var status = (RunStatus)(-1);
 
@@ -198,6 +201,7 @@ namespace Judge.LimitedRunner
                         if (!Pinvoke.GetExitCodeProcess(pi.hProcess, ref exitCode))
                             throw new Win32Exception(Marshal.GetLastWin32Error());
 
+                        
                         if (status == (RunStatus)(-1) && exitCode != 0)
                             status = RunStatus.RuntimeError;
 
