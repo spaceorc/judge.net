@@ -17,10 +17,4 @@
     <ProjectReference Include="..\Judge.Application\Judge.Application.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Unity.Abstractions">
-      <HintPath>..\packages\Unity.5.2.0\lib\net45\Unity.Abstractions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
