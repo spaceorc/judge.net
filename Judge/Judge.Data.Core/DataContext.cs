@@ -19,8 +19,6 @@ namespace Judge.Data
             modelBuilder.ApplyConfiguration(new LanguageMapping());
             modelBuilder.ApplyConfiguration(new UserMapping());
             modelBuilder.ApplyConfiguration(new SubmitBaseMapping());
-            modelBuilder.ApplyConfiguration(new ProblemSubmitMapping());
-            modelBuilder.ApplyConfiguration(new ContestTaskSubmitMapping());
             modelBuilder.ApplyConfiguration(new CheckQueueMapping());
             modelBuilder.ApplyConfiguration(new SubmitResultMapping());
             modelBuilder.ApplyConfiguration(new TaskMapping());

@@ -16,6 +16,10 @@ namespace Judge.Data.Core.Mappings
                 .WithOne(o => o.Submit)
                 .HasForeignKey("SubmitId");
 
+            builder.HasDiscriminator<byte>(@"SubmitType")
+                .HasValue<ProblemSubmit>(1)
+                .HasValue<ContestTaskSubmit>(2);
+
             builder.ToTable("Submits", "dbo");
         }
     }
