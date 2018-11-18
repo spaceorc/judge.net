@@ -1,21 +1,25 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Judge.Application.Core;
 
 namespace Judge.Application.ViewModels.Account
 {
-    public class LoginViewModel
+    public sealed class RegisterViewModel
     {
+
         [Display(Name = "Email")]
         [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "EnterEmail")]
+        [MaxLength(256)]
         [EmailAddress(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "EnterValidEmail")]
         public string Email { get; set; }
 
+        [Display(ResourceType = typeof(Resources), Name = "UserName")]
+        [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "EnterUserName")]
+        [MaxLength(100)]
+        public string UserName { get; set; }
+
         [Display(ResourceType = typeof(Resources), Name = "Password")]
         [Required(ErrorMessageResourceType = typeof(Resources), ErrorMessageResourceName = "EnterPassword")]
+        [MaxLength(100)]
         public string Password { get; set; }
-
-        [Display(ResourceType = typeof(Resources), Name = "RememberMe")]
-        public bool RememberMe { get; set; }
-
-        public string ReturnUrl { get; set; }
     }
 }

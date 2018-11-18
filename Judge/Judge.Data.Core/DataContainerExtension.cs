@@ -4,8 +4,8 @@ using Judge.Model.Core.Account;
 using Judge.Model.Core.CheckSolution;
 using Judge.Model.Core.Configuration;
 using Judge.Model.Core.Contests;
-using Judge.Model.Core.Entities;
 using Judge.Model.Core.SubmitSolution;
+using Microsoft.EntityFrameworkCore;
 using SimpleInjector;
 
 namespace Judge.Data
@@ -23,7 +23,8 @@ namespace Judge.Data
 
         public void Configure(Container container)
         {
-            container.Register<DataContext>(() => new DataContext(null), _lifestyle);
+            var options = new DbContextOptionsBuilder().UseSqlServer(_connectionString).Options;
+            container.Register<DataContext>(() => new DataContext(options), _lifestyle);
 
             container.Register<IUnitOfWorkFactory, UnitOfWorkFactory>(_lifestyle);
 

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Judge.Application.Core;
 
 namespace Judge.Application.ViewModels.Account
 {
@@ -15,7 +16,5 @@ namespace Judge.Application.ViewModels.Account
 
         [Display(ResourceType = typeof(Resources), Name = "RememberMe")]
         public bool RememberMe { get; set; }
-
-        public string ReturnUrl { get; set; }
     }
 }

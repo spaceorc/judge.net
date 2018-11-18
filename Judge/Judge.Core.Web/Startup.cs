@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Judge.Application;
+using Judge.Web.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -8,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
+using System.Security.Principal;
 
 namespace Judge.Core.Web
 {
@@ -27,7 +30,7 @@ namespace Judge.Core.Web
         {
             services.AddMvc();
 
-            Configuration.GetConnectionString("connection");
+            IntegrateSimpleInjector(services);
 
             //return new UnityServiceProvider(container);
         }
@@ -45,6 +48,8 @@ namespace Judge.Core.Web
 
             services.EnableSimpleInjectorCrossWiring(container);
             services.UseSimpleInjectorAspNetRequestScoping(container);
+            
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -68,6 +73,19 @@ namespace Judge.Core.Web
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            container.RegisterMvcControllers(app);
+            container.RegisterMvcViewComponents(app);
+
+            // Add application services. For instance:
+            var connectionString = Configuration.GetConnectionString("connection");
+            new ApplicationExtension(connectionString).Configure(container);
+            container.Register<IHttpContextAccessor, HttpContextAccessor>(new AsyncScopedLifestyle());
+            container.Register<ISessionService, SessionService>(new AsyncScopedLifestyle());
+            container.Register<IPrincipal, HttpContextPrinciple>(new AsyncScopedLifestyle());
+
+            // Allow Simple Injector to resolve services from ASP.NET Core.
+            container.AutoCrossWireAspNetComponents(app);
         }
     }
 }

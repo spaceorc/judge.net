@@ -1,0 +1,21 @@
+﻿using System.Web;
+using Judge.Application.ViewModels;
+using Judge.Application.ViewModels.Contests;
+using Judge.Application.ViewModels.Contests.ContestResult;
+using Judge.Application.ViewModels.Contests.ContestsList;
+using Judge.Application.ViewModels.Contests.ContestTasks;
+using Judge.Application.ViewModels.Submit;
+using Microsoft.AspNetCore.Http;
+
+namespace Judge.Application.Interfaces
+{
+    public interface IContestsService
+    {
+        ContestsListViewModel GetContests(bool showAll);
+        ContestTasksViewModel GetTasks(int contestId, long? userId);
+        ContestStatementViewModel GetStatement(int contestId, string label);
+        SubmitQueueViewModel GetSubmitQueue(long userId, int contestId, string label, int page, int pageSize);
+        ContestResultViewModel GetResults(int id);
+        void SubmitSolution(int contestId, string label, int selectedLanguage, IFormFile file, UserInfo userInfo);
+    }
+}

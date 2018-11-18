@@ -1,0 +1,55 @@
+﻿@model Judge.Application.ViewModels.Contests.ContestResult.ContestResultViewModel
+@{
+    ViewBag.Title = Model.Contest.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var index = 0;
+}
+
+<h2>@ViewBag.Title</h2>
+
+@Html.Partial("Contests/_ContestHeader", Model.Contest)
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Место</th>
+            <th>Участник</th>
+            @foreach (var task in Model.Tasks)
+            {
+                <th class="task">
+                    @Html.ActionLink(task.Label, "Task", new {contestId = Model.Contest.Id, label = task.Label})
+                </th>
+            }
+            <th>Решено</th>
+            <th>Время</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@(++index)</td>
+                <td>@user.UserName</td>
+                @foreach (var task in Model.Tasks)
+                {
+                    <td class="task">
+                        @{
+                            var s = user.Tasks.FirstOrDefault(o => o.ProblemId == task.ProblemId);
+                            var css = s?.Solved == true ? "green" : "red";
+                        }
+                        @if (s != null)
+                        {
+                            <span class="@css">@s.GetAttempts()</span>
+                            <br />
+                            <small class="@css">@s.GetElapsedTimeString()</small>
+                        }
+                    </td>
+                }
+                <td>@user.SolvedCount</td>
+                <td>@user.Time</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

@@ -5,8 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BeginCollectionItemCore" Version="1.0.8" />
+    <PackageReference Include="Markdig" Version="0.13.3" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.6" />
-    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.2.2" />
+    <PackageReference Include="SimpleInjector.Integration.AspNetCore.Mvc" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -14,7 +16,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Judge.Application\Judge.Application.csproj" />
+    <ProjectReference Include="..\Judge.Application.Core\Judge.Application.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Markdig">
+      <HintPath>..\packages\Markdig.0.13.3\lib\net40\Markdig.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
