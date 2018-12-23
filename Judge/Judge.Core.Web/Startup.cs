@@ -48,8 +48,8 @@ namespace Judge.Core.Web
 
             services.EnableSimpleInjectorCrossWiring(container);
             services.UseSimpleInjectorAspNetRequestScoping(container);
-            
 
+            services.AddRouting();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +72,24 @@ namespace Judge.Core.Web
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes.MapRoute(
+                    name: "SolutionSubmit",
+                    template: "Problems/Solution/{submitResultId}",
+                    defaults: new { controller = "Problems", Action = "Solution" }
+                );
+
+                routes.MapRoute(
+                    name: "ContestTask",
+                    template: "Contests/{contestId}/Task/{label}",
+                    defaults: new { controller = "Contests", Action = "Task" }
+                );
+
+                routes.MapRoute(
+                    name: "ProblemsList",
+                    template: "Problems/Page/{page}",
+                    defaults: new { controller = "Problems", action = "Index" }
+                );
             });
 
             container.RegisterMvcControllers(app);

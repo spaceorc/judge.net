@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Judge.Core.Web</title>
+    <title>@(ViewBag.Title != null ? ViewBag.Title + " - " : null)Judge.NET</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -18,31 +18,52 @@
     @RenderSection("css", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @*<a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Judge.Core.Web</a>*@
+                @Html.ActionLink("Judge.NET", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @*<li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>*@
+                    <li>@Html.ActionLink(Resources.ProblemsList, "Index", "Problems", new { page = 1 }, null)</li>
+                    <li>@Html.ActionLink(Resources.Contests, "Index", "Contests")</li>
+                    <li>@Html.ActionLink(Resources.Queue, "Index", "Submits")</li>
+                    <li>@Html.ActionLink(Resources.Manual, "Index", "Help")</li>
+                    <li>@Html.ActionLink(Resources.About, "About", "Help")</li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@User.Identity.Name <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                @if (User.IsInRole("admin"))
+                                {
+                                    <li>@Html.ActionLink(Resources.Administration, "Index", "Admin")</li>
+                                }
+                                <li role="separator" class="divider"></li>
+                                <li>@Html.ActionLink(Resources.LogOut, "Logout", "Account")</li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink(Resources.Login, "Login", "Account")</li>
+                        <li>@Html.ActionLink(Resources.Register, "Register", "Account")</li>
+                    }
                 </ul>
+                <p class="navbar-text navbar-right">@Resources.ServerTime: @DateTime.UtcNow</p>
             </div>
         </div>
-    </nav>
+    </div>
     <div class="container body-content">
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; 2018 - Judge.Core.Web</p>
+            <p>&copy; @DateTime.Now.Year - Judge.NET</p>
         </footer>
     </div>
 
