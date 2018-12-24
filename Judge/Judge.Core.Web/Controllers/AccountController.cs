@@ -1,8 +1,10 @@
 ﻿using Judge.Application.Interfaces;
 using Judge.Application.ViewModels.Account;
 using Judge.Core.Web;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Judge.Web.Controllers
 {
@@ -45,6 +47,7 @@ namespace Judge.Web.Controllers
             var result = _securityService.SignIn(model.Email, model.Password, model.RememberMe);
             if (result.Succeeded)
             {
+                HttpContext.SignInAsync(new ClaimsPrincipal(new ClaimsIdentity()));
                 return RedirectToLocal(returnUrl);
             }
 

@@ -1,5 +1,6 @@
 ﻿using Judge.Application;
 using Judge.Web.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 using SimpleInjector.Integration.AspNetCore.Mvc;
 using SimpleInjector.Lifestyles;
+using System;
 using System.Security.Principal;
 
 namespace Judge.Core.Web
@@ -30,6 +32,12 @@ namespace Judge.Core.Web
         {
             services.AddMvc();
 
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+            }).AddCookie("Identity.Application");
+
             IntegrateSimpleInjector(services);
 
             //return new UnityServiceProvider(container);
@@ -39,6 +47,8 @@ namespace Judge.Core.Web
         {
             container.Options.DefaultScopedLifestyle = new AsyncScopedLifestyle();
 
+            container.RegisterInstance<IServiceProvider>(container);
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddSingleton<IControllerActivator>(
@@ -46,10 +56,10 @@ namespace Judge.Core.Web
             services.AddSingleton<IViewComponentActivator>(
                 new SimpleInjectorViewComponentActivator(container));
 
+            services.AddRouting();
+
             services.EnableSimpleInjectorCrossWiring(container);
             services.UseSimpleInjectorAspNetRequestScoping(container);
-
-            services.AddRouting();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -101,6 +111,8 @@ namespace Judge.Core.Web
             container.Register<IHttpContextAccessor, HttpContextAccessor>(new AsyncScopedLifestyle());
             container.Register<ISessionService, SessionService>(new AsyncScopedLifestyle());
             container.Register<IPrincipal, HttpContextPrinciple>(new AsyncScopedLifestyle());
+
+            app.UseAuthentication();
 
             // Allow Simple Injector to resolve services from ASP.NET Core.
             container.AutoCrossWireAspNetComponents(app);
